@@ -89,4 +89,29 @@ entities/
   ProfitPick.json
 ```
 
+
+### Supabase Test App Setup
+
+The `src/App.jsx` file currently contains a minimal example that
+fetches and inserts rows into a `users` table. To use it in this project:
+
+1. Create a table in your Supabase project:
+   ```sql
+   CREATE TABLE users (
+     id serial PRIMARY KEY,
+     name text
+   );
+   ```
+   You can run the SQL in Supabase's SQL editor or create the table via the UI.
+
+2. Add environment variables at the repo root (see `.env.example`):
+   ```dotenv
+   VITE_SUPABASE_URL=https://your-project-id.supabase.co
+   VITE_SUPABASE_ANON_KEY=your-anon-key
+   ```
+
+3. Start the dev server: `npm run dev`.
+
+4. Use the form on the homepage to insert rows; they will appear below.
+
 Generated: 3/1/2026, 2:38:13 PM
