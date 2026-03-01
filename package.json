@@ -1,0 +1,64 @@
+{
+  "name": "ai-stock-analyzer",
+  "version": "1.0.0",
+  "description": "AI-powered NSE & BSE stock market analyzer with real-time signals, backtesting, and portfolio management",
+  "private": true,
+  "dependencies": {
+    "@base44/sdk": "^0.8.18",
+    "@hello-pangea/dnd": "^17.0.0",
+    "@radix-ui/react-dialog": "^1.1.6",
+    "@radix-ui/react-label": "^2.1.2",
+    "@radix-ui/react-progress": "^1.1.2",
+    "@radix-ui/react-select": "^2.1.6",
+    "@radix-ui/react-slider": "^1.2.3",
+    "@radix-ui/react-switch": "^1.1.3",
+    "@radix-ui/react-tabs": "^1.1.3",
+    "@radix-ui/react-toast": "^1.2.2",
+    "@supabase/supabase-js": "^2.98.0",
+    "@tanstack/react-query": "^5.84.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^3.6.0",
+    "framer-motion": "^11.16.4",
+    "jszip": "^3.10.1",
+    "lodash": "^4.17.21",
+    "lucide-react": "^0.475.0",
+    "moment": "^2.30.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-leaflet": "^4.2.1",
+    "react-markdown": "^9.0.1",
+    "react-router-dom": "^6.26.0",
+    "recharts": "^2.15.4",
+    "sonner": "^2.0.1",
+    "tailwind-merge": "^3.0.2",
+    "tailwindcss": "^3.4.0",
+    "tailwindcss-animate": "^1.0.7",
+    "three": "^0.171.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "vite": "^5.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "stock-market",
+    "nse",
+    "bse",
+    "ai",
+    "trading",
+    "react",
+    "technical-analysis"
+  ],
+  "author": "AI Stock Analyzer",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
