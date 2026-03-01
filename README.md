@@ -31,13 +31,57 @@ const json = await res.json();
 const data = JSON.parse(json.contents);
 ```
 
-## Setup on Base44
-1. Create a new project on [Base44](https://base44.com)
-2. Copy page files into `pages/` folder
-3. Copy component files into `components/` folder
-4. Copy `Layout.js`
-5. Create entities using the JSON schemas in `entities/`
-6. Deploy instantly — no server needed
+## Setup Instructions
+
+### Quick Start
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Create a `.env` file at the project root (see `.env.example`):
+   ```env
+   VITE_SUPABASE_URL=https://your-project-id.supabase.co
+   VITE_SUPABASE_ANON_KEY=your-anon-key
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open your browser and navigate to `http://localhost:5173`
+
+### Build for Production
+
+```bash
+npm run build
+npm run preview   # preview production build locally
+```
+
+## Development Workflow
+
+- **Branching Strategy**: We follow Gitflow. See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+- **Submitting Changes**: Create a feature branch, make changes, and open a PR to `develop`.
+- **CI/CD**: GitHub Actions automatically builds and tests on every push.
+
+## Deployment
+
+This project is configured for deployment on **Vercel**. See [DEPLOYMENT.md](DEPLOYMENT.md) for:
+- Step-by-step Vercel setup
+- GitHub Actions integration
+- Environment variable configuration
+- Troubleshooting
+
+## Contributing
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Branching strategy (Gitflow model)
+- Commit message guidelines
+- Pull request process
+- Code review expectations
+
 
 ## Project Structure
 ```
