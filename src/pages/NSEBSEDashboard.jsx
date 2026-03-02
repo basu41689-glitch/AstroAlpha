@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import Button from "@/components/ui/button";
+import Badge from "@/components/ui/badge";
+import Input from "@/components/ui/input";
+import Label from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
+import Switch from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown, RefreshCw, Bell, BellRing, Plus, X, Activity, BarChart3, MessageCircle, ChevronDown, ChevronUp, Zap, Clock, AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react';
-import { cn } from "@/lib/utils";
+import { cn } from "@src/lib/utils";
 import { ComposedChart, Line, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, CartesianGrid, Area } from 'recharts';
-import { base44 } from '@/api/base44Client';
 
 // Yahoo Finance v8 proxy via allorigins to avoid CORS
 async function fetchYahooOHLC(symbol, range = '5d', interval = '15m') {
@@ -35,7 +34,6 @@ async function fetchYahooOHLC(symbol, range = '5d', interval = '15m') {
   })).filter(d => d.close !== null);
 }
 
-// See full source in Base44 project - NSEBSEDashboard page
 export default function NSEBSEDashboard() {
-  return <div>NSE+BSE Dashboard - See full source in Base44</div>;
+  return <div>NSE+BSE Dashboard</div>;
 }

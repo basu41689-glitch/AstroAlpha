@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import Button from "@/components/ui/button";
+import Input from "@/components/ui/input";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Plus, Trash2, TrendingUp, TrendingDown, Wallet, Target, RefreshCw, Brain } from 'lucide-react';
-import { cn } from "@/lib/utils";
+import { cn } from "@src/lib/utils";
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 
 const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#84cc16'];
 
@@ -26,11 +25,14 @@ export default function PortfolioAnalyzer() {
 
   const analyzePortfolio = async () => {
     setIsAnalyzing(true);
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `Analyze this Indian stock portfolio: ${holdings.map(h => `${h.symbol}: ${h.quantity} shares @ ₹${h.avgPrice}`).join(', ')}. Give health score, risk, recommendations.`,
-      response_json_schema: { type: 'object', properties: { health_score: { type: 'number' }, risk_level: { type: 'string' }, summary: { type: 'string' }, recommendations: { type: 'array', items: { type: 'string' } } } }
-    });
-    setAiAnalysis(result);
+    // Local heuristic analysis replacing external LLM
+    const diversification = holdings.length;
+    const pnlRatio = totalPnL / Math.max(1, totalInvestment);
+    const health_score = Math.max(30, Math.min(95, Math.round((diversification * 10) + (pnlRatio * 100))));
+    const risk_level = pnlRatio < -0.1 ? 'HIGH' : pnlRatio < 0 ? 'MEDIUM' : 'LOW';
+    const summary = `Portfolio has ${diversification} holdings, current P&L ₹${totalPnL.toLocaleString()}.`;
+    const recommendations = [`Consider rebalancing to reduce concentration`, `Trim losing positions if stop-loss conditions hit`, `Diversify into defensive sectors`];
+    setAiAnalysis({ health_score, risk_level, summary, recommendations });
     setIsAnalyzing(false);
   };
 

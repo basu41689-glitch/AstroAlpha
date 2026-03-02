@@ -1,71 +1,57 @@
-import { useEffect, useState } from "react";
-import supabase from "./lib/supabase";
-
-// The example below assumes a "users" table with the following schema:
-//
-//   CREATE TABLE users (
-//     id serial PRIMARY KEY,
-//     name text
-//   );
-//
-// Create the table in the Supabase SQL editor or via the dashboard before
-// running the app. You can also insert rows manually there to test.
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './Layout';
+import Dashboard from './pages/Dashboard';
+import Portfolio from './pages/Portfolio';
+import StockAnalysis from './pages/StockAnalysis';
+import RiskCalculator from './pages/RiskCalculator';
+import OptionsAnalyzer from './pages/OptionsAnalyzer';
+import Backtest from './pages/Backtest';
+import NewsSentiment from './pages/NewsSentiment';
+import StrategyBuilder from './pages/StrategyBuilder';
+import Alerts from './pages/Alerts';
+import Rebalancing from './pages/Rebalancing';
+import NSEBSEDashboard from './pages/NSEBSEDashboard';
 
 function App() {
-  const [name, setName] = useState("");
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase.from("users").select("*");
-      if (error) {
-        console.error("fetch error", error);
-      } else {
-        setUsers(data || []);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const addUser = async (e) => {
-    e.preventDefault();
-    if (!name) return;
-
-    const { data, error } = await supabase.from("users").insert([{ name }]);
-    if (error) {
-      console.error("insert error", error);
-    } else {
-      setUsers((prev) => [...prev, ...data]);
-      setName("");
-    }
-  };
+  const routes = [
+    { path: '/dashboard', component: Dashboard, name: 'Dashboard' },
+    { path: '/portfolio', component: Portfolio, name: 'Portfolio' },
+    { path: '/stockanalysis', component: StockAnalysis, name: 'StockAnalysis' },
+    { path: '/riskcalculator', component: RiskCalculator, name: 'RiskCalculator' },
+    { path: '/optionsanalyzer', component: OptionsAnalyzer, name: 'OptionsAnalyzer' },
+    { path: '/backtest', component: Backtest, name: 'Backtest' },
+    { path: '/newsentiment', component: NewsSentiment, name: 'NewsSentiment' },
+    { path: '/strategybuilder', component: StrategyBuilder, name: 'StrategyBuilder' },
+    { path: '/alerts', component: Alerts, name: 'Alerts' },
+    { path: '/rebalancing', component: Rebalancing, name: 'Rebalancing' },
+    { path: '/nsebsedashboard', component: NSEBSEDashboard, name: 'NSEBSEDashboard' },
+  ];
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Supabase Test App</h1>
-
-      <form onSubmit={addUser} className="mb-4">
-        <input
-          className="border p-1 mr-2"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Enter name"
-        />
-        <button className="bg-blue-500 text-white px-3 py-1" type="submit">
-          Add user
-        </button>
-      </form>
-
-      <ul>
-        {users.map((u) => (
-          <li key={u.id}>
-            {u.id}: {u.name}
-          </li>
+    <Router>
+      <Routes>
+        {routes.map((route) => (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={
+              <Layout currentPageName={route.name}>
+                <route.component />
+              </Layout>
+            }
+          />
         ))}
-      </ul>
-    </div>
+        {/* Default route */}
+        <Route
+          path="/"
+          element={
+            <Layout currentPageName="Dashboard">
+              <Dashboard />
+            </Layout>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
-import { Button } from "@/components/ui/button";
-import { Brain, LayoutDashboard, LineChart, PieChart, FlaskConical, Bell, Download, Code2, Menu, X, ChevronRight, LogOut, User, Sparkles } from 'lucide-react';
-import { cn } from "@/lib/utils";
-import { base44 } from '@/api/base44Client';
+import { createPageUrl } from '@src/utils';
+import Button from "@/components/ui/button";
+import { Brain, LayoutDashboard, LineChart, PieChart, FlaskConical, Bell, Download, Code2, Menu, X, ChevronRight, LogOut, User, Sparkles, AlertTriangle, Zap } from 'lucide-react';
+import { cn } from "@src/lib/utils";
 
 const navItems = [
   { name: 'Dashboard', icon: LayoutDashboard, href: 'Dashboard' },
@@ -12,6 +11,8 @@ const navItems = [
   { name: 'Strategy Builder', icon: Brain, href: 'StrategyBuilder' },
   { name: 'News Sentiment', icon: Brain, href: 'NewsSentiment' },
   { name: 'Portfolio', icon: PieChart, href: 'Portfolio' },
+  { name: 'Risk Calculator', icon: AlertTriangle, href: 'RiskCalculator' },
+  { name: 'Options Analyzer', icon: Zap, href: 'OptionsAnalyzer' },
   { name: 'Rebalancing', icon: PieChart, href: 'Rebalancing' },
   { name: 'Backtest', icon: FlaskConical, href: 'Backtest' },
   { name: 'Alerts', icon: Bell, href: 'Alerts' },
@@ -25,7 +26,7 @@ export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    // authentication removed
   }, []);
 
   return (
@@ -68,12 +69,12 @@ export default function Layout({ children, currentPageName }) {
                     <p className="text-xs text-slate-500 truncate max-w-[120px]">{user.email}</p>
                   </div>
                 </div>
-                <Button variant="ghost" size="icon" onClick={() => base44.auth.logout()} className="text-slate-400 hover:text-white">
+                <Button variant="ghost" size="icon" onClick={() => {}} className="text-slate-400 hover:text-white">
                   <LogOut className="w-4 h-4" />
                 </Button>
               </div>
             ) : (
-              <Button onClick={() => base44.auth.redirectToLogin()} className="w-full bg-violet-600 hover:bg-violet-700">Sign In</Button>
+              <Button onClick={() => {}} className="w-full bg-violet-600 hover:bg-violet-700">Sign In</Button>
             )}
           </div>
         </div>

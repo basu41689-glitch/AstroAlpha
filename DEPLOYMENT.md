@@ -196,6 +196,15 @@ When ready to go live:
 npx vercel link
 
 # Deploy locally (for testing)
+
+## Production Checklist
+- [ ] set `VITE_API_BASE_URL` to the production backend URL in your hosting environment
+- [ ] provide `PORT` and `CORS_ORIGINS` environment variables to backend
+- [ ] run `npm run build` for frontend and `npm run start:prod` for backend (or use `npm run start` in development)
+- [ ] enable `trust proxy` for platforms behind a load balancer (Render/Vercel)
+- [ ] confirm backend health at `$BACKEND_URL/health` returns status healthy
+
+#
 npm run build && npm run preview
 
 # Pull environment variables from Vercel

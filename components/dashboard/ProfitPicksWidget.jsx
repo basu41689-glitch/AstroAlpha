@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import Badge from "@/components/ui/badge";
+import Button from "@/components/ui/button";
 import { Sparkles, TrendingUp, RefreshCw, ArrowRight, Zap, Target, Shield } from 'lucide-react';
-import { cn } from "@/lib/utils";
+import { cn } from "@src/lib/utils";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
+import { createPageUrl } from '@src/utils';
 
 export default function ProfitPicksWidget() {
   const [picks, setPicks] = useState([]);

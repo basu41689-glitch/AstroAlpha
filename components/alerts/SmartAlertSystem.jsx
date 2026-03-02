@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import Button from "@/components/ui/button";
+import Input from "@/components/ui/input";
+import Label from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
+import Switch from "@/components/ui/switch";
 import { Bell, Plus, Trash2, Target, Shield, Zap, Volume2, Clock } from 'lucide-react';
-import { cn } from "@/lib/utils";
+import { cn } from "@src/lib/utils";
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const ALERT_TYPES = [
@@ -22,10 +21,30 @@ const ALERT_TYPES = [
 export default function SmartAlertSystem() {
   const [newAlert, setNewAlert] = useState({ stock_symbol: '', alert_type: 'PRICE_TARGET', target_value: '', condition: '' });
   const queryClient = useQueryClient();
-  const { data: alerts = [], isLoading } = useQuery({ queryKey: ['alerts'], queryFn: () => base44.entities.Alert.list('-created_date', 50) });
-  const createAlertMutation = useMutation({ mutationFn: (data) => base44.entities.Alert.create(data), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['alerts'] }) });
-  const deleteAlertMutation = useMutation({ mutationFn: (id) => base44.entities.Alert.delete(id), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['alerts'] }) });
-  const updateAlertMutation = useMutation({ mutationFn: ({ id, data }) => base44.entities.Alert.update(id, data), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['alerts'] }) });
+  import { api } from '@/api/client';
+
+  const { data: alerts = [], isLoading } = useQuery({
+    queryKey: ['alerts'],
+    queryFn: async () => {
+      try {
+        return await api.get('/alerts');
+      } catch (e) {
+        return [];
+      }
+    },
+  });
+  const createAlertMutation = useMutation({
+    mutationFn: async (data) => api.post('/alerts', data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['alerts'] }),
+  });
+  const deleteAlertMutation = useMutation({
+    mutationFn: async (id) => api.del(`/alerts/${id}`),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['alerts'] }),
+  });
+  const updateAlertMutation = useMutation({
+    mutationFn: async ({ id, data }) => api.put(`/alerts/${id}`, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['alerts'] }),
+  });
 
   const handleCreateAlert = () => {
     if (newAlert.stock_symbol && newAlert.alert_type) {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import Badge from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, Activity, BarChart3, RefreshCw } from 'lucide-react';
-import { cn } from "@/lib/utils";
+import { cn } from "@src/lib/utils";
 import { motion } from 'framer-motion';
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 
 const MARKET_INDICES = [
   { name: 'NIFTY 50', value: 22856.75, change: 0.85, volume: '125.4Cr' },

@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Brain, Zap, Clock, Target, Shield, Activity, BarChart3, Loader2 } from 'lucide-react';
-import { cn } from "@/lib/utils";
+import { cn } from "@src/lib/utils";
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 
 // Technical analysis based on real price data
 const generateRealAnalysis = (stock) => {
