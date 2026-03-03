@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { api } from '@/api/client';
 
 export default function AIChat() {
   const [input, setInput] = useState("");
@@ -11,16 +12,11 @@ export default function AIChat() {
     setMessages((m) => [...m, newMsg]);
     setLoading(true);
     try {
-      const resp = await fetch("/api/agent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ task: input }),
-      });
-      const data = await resp.json();
+      const data = await api.post('/agent', { task: input });
       const reply = data.result || data.error || "(no response)";
       setMessages((m) => [...m, { role: "assistant", content: reply }]);
     } catch (err) {
-      setMessages((m) => [...m, { role: "assistant", content: err.message }]);
+      setMessages((m) => [...m, { role: "assistant", content: err.message || String(err) }]);
     }
     setLoading(false);
     setInput("");

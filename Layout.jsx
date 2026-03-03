@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useAuth } from './hooks/useAuth';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import Button from "@/components/ui/button";
-import { Brain, LayoutDashboard, LineChart, PieChart, FlaskConical, Bell, Download, Code2, Menu, X, ChevronRight, LogOut, User, Sparkles, AlertTriangle, Zap } from 'lucide-react';
+import { Brain, LayoutDashboard, LineChart, PieChart, FlaskConical, Bell, Download, Code2, Menu, X, ChevronRight, LogOut, User, Sparkles, AlertTriangle, Zap, CreditCard } from 'lucide-react';
 import { cn } from "@src/lib/utils";
 
 const navItems = [
@@ -17,17 +18,15 @@ const navItems = [
   { name: 'Backtest', icon: FlaskConical, href: 'Backtest' },
   { name: 'Alerts', icon: Bell, href: 'Alerts' },
   { name: 'NSE+BSE Live', icon: LineChart, href: 'NSEBSEDashboard' },
+  { name: 'Professional', icon: Sparkles, href: 'Professional' },
   { name: 'API Docs', icon: Code2, href: 'APIDocumentation' },
+  { name: 'Billing', icon: CreditCard, href: 'Billing' },
   { name: 'Install App', icon: Download, href: 'InstallApp' },
 ];
 
 export default function Layout({ children, currentPageName }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    // authentication removed
-  }, []);
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-slate-950 flex">

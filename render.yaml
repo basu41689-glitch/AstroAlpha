@@ -1,0 +1,25 @@
+# Render configuration for frontend (static site) and backend (Node web service)
+# Place this at project root and push to GitHub (or your repo) that is connected to Render.
+
+services:
+  - type: web
+    name: ai-stock-frontend
+    env: static
+    plan: free
+    # if using monorepo, set the root dir appropriately
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: dist
+    # create an env var named VITE_API_BASE_URL pointing to the backend URL (see below)
+
+  - type: web
+    name: ai-stock-backend
+    env: node
+    plan: free
+    # optionally set the root directory if the Node code is not at repo root
+    buildCommand: "npm install && npm run build-server"
+    startCommand: "npm run start:prod"
+    # environment variables must be added in the Render dashboard or via CLI
+    # see README or docs for keys such as:
+    #   PORT, NODE_ENV, CORS_ORIGINS, SUPABASE_URL, SUPABASE_SERVICE_KEY, OPENAI_API_KEY, etc.
+
+# You can add additional services (databases, cron jobs, etc.) below if needed.

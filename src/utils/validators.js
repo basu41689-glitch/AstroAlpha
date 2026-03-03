@@ -35,3 +35,9 @@ export const validateAlertRule = (rule) => {
     (rule.type === 'price' ? validateNumber(rule.value, 0) : true)
   );
 };
+
+// basic HTML sanitizer example (strips tags, not for rich text)
+export const sanitizeString = (str) => {
+  if (typeof str !== 'string') return '';
+  return str.replace(/<[^>]+>/g, '');
+};

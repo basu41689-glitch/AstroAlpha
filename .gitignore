@@ -1,2 +1,14 @@
 node_modules
 .env
+
+# ignore server env as well
+/server/.env
+
+# build outputs
+/dist
+/build
+/.next
+
+# logs
+*.log
+

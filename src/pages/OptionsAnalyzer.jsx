@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Zap } from 'lucide-react';
-import OptionsAnalyzer from '../../components/options/OptionsAnalyzer';
+import OptionsAnalyzer from '../components/options/OptionsAnalyzer';
 
 export default function OptionsAnalyzerPage() {
   return (

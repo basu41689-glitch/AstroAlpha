@@ -1,4 +1,6 @@
 import client from './openai.js';
+import logger from './logger.js';
+
 
 // Advanced AI Agent with Real-time Market Analysis and Autonomous Trading Tools
 // Supports automatic function calling, multi-step analysis, and streaming responses
@@ -112,7 +114,7 @@ export const aiTools = [
 // ============================================================================
 
 export const executeTool = async (toolName, parameters) => {
-  console.log(`[AI Tool] Executing: ${toolName}`, parameters);
+  logger.debug(`[AI Tool] Executing: ${toolName}`, parameters);
   
   switch (toolName) {
     case 'analyzeStockPrice':
@@ -288,7 +290,7 @@ async function backtestStrategy(params) {
  * Supports multi-step analysis with automatic function calling
  */
 export async function runAgent(task) {
-  console.log(`[AI Agent] Starting task: ${task}`);
+  logger.info(`[AI Agent] Starting task: ${task}`);
   
   const messages = [
     {
@@ -304,7 +306,7 @@ export async function runAgent(task) {
 
   while (iteration < maxIterations) {
     iteration++;
-    console.log(`[AI Agent Iteration ${iteration}/${maxIterations}]`);
+    logger.debug(`[AI Agent Iteration ${iteration}/${maxIterations}]`);
 
     try {
       // Call OpenAI with tools
@@ -330,7 +332,7 @@ export async function runAgent(task) {
         // Execute each tool and collect results
         const toolResults = [];
         for (const toolCall of toolCalls) {
-          console.log(`  → Calling tool: ${toolCall.function.name}`);
+          logger.debug(`  → Calling tool: ${toolCall.function.name}`);
           try {
             const toolResult = await executeTool(
               toolCall.function.name,
@@ -343,7 +345,7 @@ export async function runAgent(task) {
               content: JSON.stringify(toolResult)
             });
           } catch (error) {
-            console.error(`  ✗ Tool error: ${error.message}`);
+            logger.error(`  ✗ Tool error: ${error.message}`);
             toolResults.push({
               type: 'tool_result',
               tool_use_id: toolCall.id,
@@ -360,7 +362,7 @@ export async function runAgent(task) {
 
       } else {
         // No more tool calls, return final response
-        console.log('[AI Agent] Task completed successfully');
+        logger.info('[AI Agent] Task completed successfully');
         return {
           status: 'completed',
           result: response.choices[0].message.content,
@@ -369,7 +371,7 @@ export async function runAgent(task) {
         };
       }
     } catch (error) {
-      console.error(`[AI Agent] Error at iteration ${iteration}:`, error);
+      logger.error(`[AI Agent] Error at iteration ${iteration}:`, error);
       return {
         status: 'error',
         error: error.message,
@@ -379,7 +381,7 @@ export async function runAgent(task) {
   }
 
   // Max iterations reached
-  console.log(`[AI Agent] Reached max iterations (${maxIterations})`);
+  logger.warn(`[AI Agent] Reached max iterations (${maxIterations})`);
   return {
     status: 'completed',
     result: response.choices[0].message.content,
@@ -418,7 +420,7 @@ export async function analyzeBatch(investments, analysisType = 'comprehensive') 
  * Run agent with streaming response for real-time feedback
  */
 export async function runAgentStream(task, onChunk, onComplete) {
-  console.log(`[AI Agent Stream] Starting: ${task}`);
+  logger.info(`[AI Agent Stream] Starting: ${task}`);
   
   const messages = [{ role: 'user', content: task }];
   let fullResponse = '';

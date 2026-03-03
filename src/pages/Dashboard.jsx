@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import { sanitizeString } from '../utils/validators';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Button from "@/components/ui/button";
 import Badge from "@/components/ui/badge";
@@ -7,20 +9,17 @@ import { cn } from "@src/lib/utils";
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@src/utils';
 import { motion } from 'framer-motion';
-import MarketOverview from '../../components/dashboard/MarketOverview';
-import ProfitPicksWidget from '../../components/dashboard/ProfitPicksWidget';
-import AIInsightCard from '../../components/dashboard/AIInsightCard';
-import PreMarketAlerts from '../../components/alerts/PreMarketAlerts';
-import DownloadSourceCode from '../../components/dashboard/DownloadSourceCode';
+import MarketOverview from '../components/dashboard/MarketOverview';
+import ProfitPicksWidget from '../components/dashboard/ProfitPicksWidget';
+import AIInsightCard from '../components/dashboard/AIInsightCard';
+import PreMarketAlerts from '../components/alerts/PreMarketAlerts';
+import DownloadSourceCode from '../components/dashboard/DownloadSourceCode';
+import BillingSection from '../components/BillingSection';
 // base44 removed
 
 export default function Dashboard() {
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [isRefreshing, setIsRefreshing] = useState(false);
-
-  useEffect(() => {
-    // auth removed
-  }, []);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -44,7 +43,11 @@ export default function Dashboard() {
       <div className="relative z-10 max-w-7xl mx-auto space-y-6">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-white">Welcome back{user?.full_name ? `, ${user.full_name.split(' ')[0]}` : ''}! 👋</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-white">
+  Welcome back{
+    user?.full_name ? `, ${sanitizeString(user.full_name.split(' ')[0])}` : ''
+  }! 👋
+</h1>
             <p className="text-slate-400 mt-1">Your AI-powered stock market assistant is ready</p>
           </div>
           <div className="flex items-center gap-3">
@@ -58,6 +61,8 @@ export default function Dashboard() {
             </Link>
           </div>
         </motion.div>
+        {/* billing placeholder */}
+        <BillingSection />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {quickActions.map((action, index) => (
             <Link key={action.label} to={createPageUrl(action.href)}>

@@ -1,4 +1,5 @@
 import express from 'express';
+import logger from '../utils/logger.js';
 import {
   runAgent,
   analyzeBatch,
@@ -27,7 +28,7 @@ router.post('/analyze', async (req, res) => {
       return res.status(400).json({ error: 'Task description required' });
     }
 
-    console.log('[API] AI Analyze:', task);
+    logger.info('[API] AI Analyze:', task);
     const result = await runAgent(task);
     
     res.json({
@@ -35,7 +36,7 @@ router.post('/analyze', async (req, res) => {
       data: result
     });
   } catch (error) {
-    console.error('[API Error] AI Analyze:', error);
+    logger.error('[API Error] AI Analyze:', error);
     res.status(500).json({
       status: 'error',
       error: error.message
@@ -55,7 +56,7 @@ router.post('/analyze-batch', async (req, res) => {
       return res.status(400).json({ error: 'Investments array required' });
     }
 
-    console.log('[API] Batch Analysis:', investments.length, 'items');
+    logger.info('[API] Batch Analysis:', investments.length, 'items');
     const result = await analyzeBatch(investments, analysisType);
     
     res.json({
@@ -63,7 +64,7 @@ router.post('/analyze-batch', async (req, res) => {
       data: result
     });
   } catch (error) {
-    console.error('[API Error] Batch Analysis:', error);
+    logger.error('[API Error] Batch Analysis:', error);
     res.status(500).json({
       status: 'error',
       error: error.message
@@ -83,7 +84,7 @@ router.post('/portfolio-analysis', async (req, res) => {
       return res.status(400).json({ error: 'Portfolio array required' });
     }
 
-    console.log('[API] Portfolio Analysis:', portfolio.length, 'holdings');
+    logger.info('[API] Portfolio Analysis:', portfolio.length, 'holdings');
     const result = await analyzePortfolioComprehensive(portfolio);
     
     res.json({
@@ -91,7 +92,7 @@ router.post('/portfolio-analysis', async (req, res) => {
       data: result
     });
   } catch (error) {
-    console.error('[API Error] Portfolio Analysis:', error);
+    logger.error('[API Error] Portfolio Analysis:', error);
     res.status(500).json({
       status: 'error',
       error: error.message
@@ -111,7 +112,7 @@ router.post('/risk-assessment', async (req, res) => {
       return res.status(400).json({ error: 'Portfolio array required' });
     }
 
-    console.log('[API] Risk Assessment:', portfolio.length, 'holdings');
+    logger.info('[API] Risk Assessment:', portfolio.length, 'holdings');
     const result = await analyzePortfolioRisk(portfolio, scenarios);
     
     res.json({
@@ -119,7 +120,7 @@ router.post('/risk-assessment', async (req, res) => {
       data: result
     });
   } catch (error) {
-    console.error('[API Error] Risk Assessment:', error);
+    logger.error('[API Error] Risk Assessment:', error);
     res.status(500).json({
       status: 'error',
       error: error.message
@@ -139,7 +140,7 @@ router.post('/market-prediction', async (req, res) => {
       return res.status(400).json({ error: 'Sectors array required' });
     }
 
-    console.log('[API] Market Prediction:', sectors.length, 'sectors');
+    logger.info('[API] Market Prediction:', sectors.length, 'sectors');
     const result = await predictMarketTrends(sectors, timeframe);
     
     res.json({
@@ -147,7 +148,7 @@ router.post('/market-prediction', async (req, res) => {
       data: result
     });
   } catch (error) {
-    console.error('[API Error] Market Prediction:', error);
+    logger.error('[API Error] Market Prediction:', error);
     res.status(500).json({
       status: 'error',
       error: error.message
@@ -167,7 +168,7 @@ router.post('/backtest-strategy', async (req, res) => {
       return res.status(400).json({ error: 'Strategy description required' });
     }
 
-    console.log('[API] Strategy Backtest:', strategy.substring(0, 50) + '...');
+    logger.info('[API] Strategy Backtest:', strategy.substring(0, 50) + '...');
     const result = await backTestStrategy(strategy, params);
     
     res.json({
@@ -175,7 +176,7 @@ router.post('/backtest-strategy', async (req, res) => {
       data: result
     });
   } catch (error) {
-    console.error('[API Error] Strategy Backtest:', error);
+    logger.error('[API Error] Strategy Backtest:', error);
     res.status(500).json({
       status: 'error',
       error: error.message
@@ -195,7 +196,7 @@ router.post('/stream', async (req, res) => {
       return res.status(400).json({ error: 'Task description required' });
     }
 
-    console.log('[API] Stream Analysis:', task.substring(0, 50) + '...');
+    logger.info('[API] Stream Analysis:', task.substring(0, 50) + '...');
     
     // Set up SSE headers
     res.setHeader('Content-Type', 'text/event-stream');
@@ -214,7 +215,7 @@ router.post('/stream', async (req, res) => {
       }
     );
   } catch (error) {
-    console.error('[API Error] Stream Analysis:', error);
+    logger.error('[API Error] Stream Analysis:', error);
     res.status(500).json({
       status: 'error',
       error: error.message
@@ -264,7 +265,7 @@ router.get('/tools', (req, res) => {
       ]
     });
   } catch (error) {
-    console.error('[API Error] Get Tools:', error);
+    logger.error('[API Error] Get Tools:', error);
     res.status(500).json({
       status: 'error',
       error: error.message

@@ -1,108 +1,219 @@
-import dotenv from "dotenv";
-import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
-import { runAgent } from "../src/lib/aiAgent.js";
-import aiRoutes from "./routes/aiRoutes.js";
-import { config } from "./config.js";
+/**
+ * Options Analytics Engine - Main Server File
+ * 
+ * Production-ready Node.js/Express server for Indian Options Analytics
+ * 
+ * Features:
+ * - NSE options chain data fetching
+ * - IV calculation using Black-Scholes
+ * - OI analysis with PCR and max pain
+ * - AI interpretation with OpenAI
+ * - RESTful API with JSON responses
+ * - Comprehensive error handling and logging
+ */
 
-// Load environment variables from .env file
-dotenv.config();
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const compression = require('compression');
+require('dotenv').config();
 
+const config = require('./config/config');
+const logger = require('./utils/logger');
+const optionsRoutes = require('./routes/optionsRoutes');
+const advancedOptionsRoutes = require('./routes/advancedOptionsRoutes');
+
+// Initialize Express app
 const app = express();
 
-// configure CORS based on environment or allowed list
-const corsOptions = {
-  origin: (origin, callback) => {
-    // allow requests with no origin (e.g. curl, mobile apps)
-    if (!origin) return callback(null, true);
-    if (config.corsOrigins.length === 0) {
-      if (config.env === 'development') {
-        return callback(null, true);
-      }
-      return callback(new Error('CORS origins not configured'));
-    }
-    if (config.corsOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    callback(new Error("Not allowed by CORS"));
-  },
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-
 // ============================================================================
-// HEALTH CHECK ENDPOINTS
+// MIDDLEWARE
 // ============================================================================
 
-// Simple health check
-app.get("/", (req, res) => res.send("🤖 AI Agent Server Running"));
+// Security
+app.use(helmet());
 
-app.get("/health", (req, res) => {
-  res.json({
-    status: "healthy",
-    service: "AI Agent Backend",
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    env: config.env
-  });
+// Compression
+app.use(compression());
+
+// CORS
+app.use(cors({
+    origin: config.CORS.ORIGIN,
+    credentials: config.CORS.CREDENTIALS
+}));
+
+// Body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Request logging middleware
+app.use((req, res, next) => {
+    const startTime = Date.now();
+    res.on('finish', () => {
+        const duration = Date.now() - startTime;
+        logger.info(`${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`);
+    });
+    next();
 });
 
 // ============================================================================
-// LEGACY API ENDPOINTS (Maintained for backward compatibility)
+// API ROUTES
 // ============================================================================
 
-app.post("/api/agent", async (req, res) => {
-  try {
-    const { task } = req.body;
-    if (!task) return res.status(400).json({ error: "missing task" });
-    const result = await runAgent(task);
-    res.json({ result });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message || String(err) });
-  }
+// Health check
+app.get('/health', (req, res) => {
+    res.json({
+        status: 'OK',
+        service: 'Options Analytics Engine',
+        environment: config.NODE_ENV,
+        timestamp: new Date().toISOString()
+    });
 });
 
-// Example streaming endpoint with SSE
-app.post("/api/agent/stream", async (req, res) => {
-  // set headers for SSE
-  res.writeHead(200, {
-    "Content-Type": "text/event-stream",
-    "Cache-Control": "no-cache",
-    Connection: "keep-alive",
-  });
-  res.write(`data: starting stream\n\n`);
-  // placeholder response sequence
-  setTimeout(() => res.write(`data: first chunk\n\n`), 500);
-  setTimeout(() => res.write(`data: second chunk\n\n`), 1000);
-  setTimeout(() => res.write(`event: done\n\n`), 1500);
+// Options analytics routes
+app.use('/options', optionsRoutes);
+
+// Advanced options routes
+app.use('/api/options', advancedOptionsRoutes);
+
+// API documentation
+app.get('/api', (req, res) => {
+    res.json({
+        service: 'Indian Options Analytics Engine',
+        version: '2.0.0',
+        endpoints: {
+            'BASIC ROUTES': {
+                'POST /options/analyze': {
+                    description: 'Complete options analysis with AI interpretation',
+                    queryParams: {
+                        underlying: 'NIFTY or BANKNIFTY (required)',
+                        includeAI: 'true/false (default: true)'
+                    }
+                },
+                'GET /options/summary': {
+                    description: 'Quick market summary',
+                    queryParams: { underlying: 'NIFTY or BANKNIFTY' }
+                },
+                'GET /options/maxpain': {
+                    description: 'Max pain prediction',
+                    queryParams: { underlying: 'NIFTY or BANKNIFTY' }
+                },
+                'GET /options/pcr': {
+                    description: 'Put-call ratio analysis',
+                    queryParams: { underlying: 'NIFTY or BANKNIFTY' }
+                }
+            },
+            'ADVANCED PROFESSIONAL ROUTES': {
+                'GET /api/options/summary': {
+                    description: 'Market snapshot with PCR, IV, max pain, support/resistance, institutional bias',
+                    queryParams: { 
+                        underlying: 'NIFTY/BANKNIFTY/FINNIFTY/MIDCPNIFTY (required)',
+                        expiry: 'Specific expiry date optional'
+                    }
+                },
+                'GET /api/options/heatmap': {
+                    description: 'Professional heatmap data with call/put OI intensity, Greeks, smart money zones',
+                    queryParams: {
+                        underlying: 'Required',
+                        expiry: 'Optional'
+                    }
+                },
+                'GET /api/options/greeks': {
+                    description: 'Full Greeks analysis (Delta, Gamma, Theta, Vega, Rho) for all strikes',
+                    queryParams: {
+                        underlying: 'Required',
+                        expiry: 'Optional'
+                    }
+                },
+                'GET /api/options/maxpain': {
+                    description: 'Max pain analysis with payoff profile',
+                    queryParams: {
+                        underlying: 'Required',
+                        expiry: 'Optional'
+                    }
+                },
+                'GET /api/options/institutional-bias': {
+                    description: 'Institutional positioning detection (PCR signals, OI concentration, IV spikes)',
+                    queryParams: {
+                        underlying: 'Required',
+                        expiry: 'Optional'
+                    }
+                },
+                'POST /api/options/ai-analysis': {
+                    description: 'AI-powered market interpretation with recommendations',
+                    body: {
+                        underlying: 'Required',
+                        expiry: 'Optional'
+                    }
+                }
+            }
+        }
+    });
 });
 
 // ============================================================================
-// NEW AI ROUTES - ADVANCED ANALYSIS ENDPOINTS
+// ERROR HANDLING
 // ============================================================================
 
-app.use("/api/ai", aiRoutes);
-
-// trust proxy for platforms like Render/Vercel
-app.enable('trust proxy');
-
-const port = config.port;
-app.listen(port, () => {
-  console.log(`🚀 Backend server listening on port ${port} (env=${config.env})`);
+// 404 handler
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        error: 'Endpoint not found',
+        path: req.path
+    });
 });
 
-// production-style error handler
+// Global error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack || err);
-  res.status(err.status || 500).json({
-    error:
-      config.env === 'production'
-        ? 'Internal server error'
-        : err.message || err.toString(),
-  });
+    logger.error('Unhandled error:', {
+        message: err.message,
+        stack: err.stack,
+        path: req.path
+    });
+
+    res.status(err.status || 500).json({
+        success: false,
+        error: err.message || 'Internal server error',
+        ...(config.NODE_ENV === 'development' && { stack: err.stack })
+    });
 });
+
+// ============================================================================
+// SERVER STARTUP
+// ============================================================================
+
+const PORT = config.PORT;
+
+app.listen(PORT, () => {
+    logger.info(`\n${'='.repeat(60)}`);
+    logger.info('OPTIONS ANALYTICS ENGINE STARTED');
+    logger.info(`${'='.repeat(60)}`);
+    logger.info(`Server running on port ${PORT}`);
+    logger.info(`Environment: ${config.NODE_ENV}`);
+    logger.info(`OpenAI Model: ${config.AI_INTERPRETER.MODEL}`);
+    logger.info(`Underlyings: ${config.OPTIONS_ANALYSIS.UNDERLYINGS.join(', ')}`);
+    logger.info(`${'='.repeat(60)}\n`);
+
+    // Log configuration
+    if (config.NODE_ENV === 'development') {
+        logger.debug('Configuration:', {
+            CORS_ORIGIN: config.CORS.ORIGIN,
+            RISK_FREE_RATE: config.IV_ENGINE.RISK_FREE_RATE,
+            CACHE_TTL: config.MARKET_DATA.CACHE_TTL
+        });
+    }
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    logger.info('SIGTERM signal received: closing HTTP server');
+    process.exit(0);
+});
+
+process.on('SIGINT', () => {
+    logger.info('SIGINT signal received: closing HTTP server');
+    process.exit(0);
+});
+
+module.exports = app;

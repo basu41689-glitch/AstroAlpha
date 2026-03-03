@@ -1,0 +1,53 @@
+{
+  "name": "options-analytics-engine",
+  "version": "1.0.0",
+  "description": "Production-ready Indian Options Analytics Engine with AI interpretation",
+  "main": "server/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js",
+    "test": "jest --coverage",
+    "lint": "eslint server/ src/",
+    "build": "npm run test && npm run lint",
+    "deploy": "git push origin main"
+  },
+  "keywords": [
+    "options",
+    "derivatives",
+    "NSE",
+    "india",
+    "implied-volatility",
+    "black-scholes",
+    "quantitative-finance",
+    "ai-analysis",
+    "openai"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0",
+    "eslint": "^8.54.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/options-analytics.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/options-analytics/issues"
+  },
+  "homepage": "https://github.com/yourusername/options-analytics#readme"
+}

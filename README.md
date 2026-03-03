@@ -124,6 +124,12 @@ Go to your GitHub repo's **Settings > Secrets and variables > Actions** and add:
 - `OPENAI_API_KEY` – optional if you want server run in GitHub Actions
 - `VITE_SUPABASE_URL` & `VITE_SUPABASE_ANON_KEY` – for frontend tests or preview deployments
 
+> ⚠️ **Security reminders**
+> 1. Keep this GitHub repository **private**; do not expose the code publicly.
+> 2. Never commit your `.env` file. It's already listed in `.gitignore`.
+> 3. Store the Supabase **service** key only on the backend (`.env` or hosting env).
+> 4. Configure `CORS_ORIGINS` to include **only** your frontend domain (e.g. `https://ai-stock-frontend.onrender.com`).
+
 These secrets are consumed by the workflows to deploy to Vercel automatically.
 
 ### 3. Link Vercel to GitHub
@@ -134,6 +140,41 @@ These secrets are consumed by the workflows to deploy to Vercel automatically.
 4. After connecting, Vercel will automatically deploy a preview for each pull request and a production build whenever you push to `main`.
 
 > **Tip:** you can also use the `vercel` CLI (`npm i -g vercel`) to link a project locally by running `vercel link` and following the prompts.
+### 5. Optional: Deploy on Render (free tier)
+
+The project already includes a `render.yaml` at the repo root. To deploy:
+
+1. Create a Render account and connect your GitHub repository.
+2. Import the `render.yaml` file or manually create two services:
+   - **ai-stock-frontend** (Static site) using `npm install && npm run build`, `dist` as publish path.
+   - **ai-stock-backend** (Web service) using `npm install && npm run build-server` and start command `npm run start:prod`.
+3. Set environment variables in Render's dashboard matching those used in Vercel (`PORT`, `NODE_ENV`, `OPENAI_API_KEY`, `SUPABASE_URL`, etc.).
+4. By default Render will assign your services subdomains like:
+
+   - **Frontend**: `https://ai-stock-frontend.onrender.com`
+   - **Backend**: `https://ai-stock-backend.onrender.com`
+
+   These are **temporary domains** you can use for UI testing immediately; they remain live as long as the service is active. When you first deploy you'll see the exact URLs in the Render dashboard — copy and paste one to open the site in your browser.
+
+   _Example frontend URL for testing:_ **https://ai-stock-frontend.onrender.com**
+
+5. To add a custom domain, go to the service settings and add your domain; Render will provide DNS records. Use this domain when you're ready to go live.
+
+### 6. Supabase Integration
+
+If you plan to store user preferences, historical IV data, or audit logs, create a [Supabase](https://supabase.com) project:
+
+1. Create a new project and note the `url` and `anon key`.
+2. In your repo, set the following environment variables:
+   ```env
+   VITE_SUPABASE_URL=https://your-project-id.supabase.co
+   VITE_SUPABASE_ANON_KEY=your-anon-key
+   SUPABASE_SERVICE_KEY=your-service-role-key   # only for backend
+   ```
+3. Install the Supabase client in the workspace (already in `package.json`) and configure `src/supabaseClient.js`.
+4. Use Supabase tables to persist any analysis results or user data. Refer to `server/services/supabase.js` for helper functions.
+
+> Supabase is optional but recommended for production analytics and user management.
 
 ### 4. Verifying the connection
 

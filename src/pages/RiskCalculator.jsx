@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle } from 'lucide-react';
-import AIRiskCalculator from '../../components/risk/AIRiskCalculator';
+import AIRiskCalculator from '../components/risk/AIRiskCalculator';
 
 export default function RiskCalculator() {
   return (
